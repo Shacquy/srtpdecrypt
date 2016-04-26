@@ -1,0 +1,21 @@
+For Windows:
+
+-----------------------------------
+Download and install the Developer's Pack for WinPcap from https://www.winpcap.org/devel.htm (as of April 2016 this is version 4.1.2)
+In Visual Studio, create a project and include the .h and the .c files from the srtpdecrypt repository
+Add the WinPcap library path in the Linker settings; add wpcap.lib in the Linker Input dependencies
+Compile
+-----------------------------------
+
+
+
+
+
+
+For Linux:
+
+-----------------------------------
+Download and install the libpcap-dev (for example 'sudo apt-get install libpcap0.8-dev')
+Copy all .h and .c files to a folder
+gcc aes.c analyze.c base64.c decrypt.c extract.c file.c hex.c srtpdecrypt.c usage-and-help.c -o srtpdecrypt -lpcap
+-----------------------------------
