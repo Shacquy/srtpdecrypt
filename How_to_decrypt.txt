@@ -1,0 +1,56 @@
+To decrypt an SRTP Audio stream run
+
+srtpdecrypt decrypt <SSRC> <Key> <input_file>
+
+Example:
+srtpdecrypt decrypt 0x4ebd56e3 fCaLYx1IEhD62eKqFIGOk1qykNikYcamkFVkde1b input.pcap
+
+
+The input_file is the packet capture file that contains the audio stream. Note the input file has to be in tcpdump pcap format;
+pcapng format is not supported.
+
+The Key is the 40 byte string that contains the key material for the Audio stream encryption. Grab this key from a SIP trace or
+from a log file that contains SIP traffic. The key exchange in SIP traffic is defined in RFC4568,
+example: AES_CM_128_HMAC_SHA1_80 inline:fCaLYx1IEhD62eKqFIGOk1qykNikYcamkFVkde1b|2^31|1:1.
+Make sure you identify the correct key for the SRTP Audio stream that you want to decrypt.
+
+The Synchronization source identifier (SSRC) uniquely identifies the source of a stream,
+see https://en.wikipedia.org/wiki/Real-time_Transport_Protocol. Identify the SSRC of the SRTP Audio stream
+you want to decrypt in Wireshark or by running srtpdecrypt analyze <input_file>. Specify the SSRC with a
+preceding 0x in the command line.
+
+
+
+srtpdecrypt will create output files depending on the codec used in the Audio stream.
+
+If the codec is G.711 PCMA or G.711 PCMU, srtpdecrypt creates a .wav file that can be played directly.
+
+If the codec is G.722, srtpdecrypt creates a raw file with .g722 extension. You can use ffmpeg to convert this to a wav file:
+ffmpeg -i raw.g722 out.wav
+
+If the codec is SILK/8000, srtpdecrypt creates a SILK SDK binary file with .bin extension.
+You can use the SILK SDK decoder tool to convert this to a raw pcm file, which can then be converted to .wav using ffmpeg:
+decoder.exe output-SILK8000.bit help.pcm -Fs_API 8000
+ffmpeg.exe -f s16le -ar 8000 -i help.pcm out.wav
+
+If the codec is SILK/16000, srtpdecrypt creates a SILK SDK binary file with .bin extension.
+You can use the SILK SDK decoder tool to convert this to a raw pcm file, which can then be converted to .wav using ffmpeg:
+decoder.exe output-SILK16000.bit help.pcm -Fs_API 16000
+ffmpeg.exe -f s16le -ar 16000 -i help.pcm out.wav
+
+(Note: the decoder tool executable is included in the srtpdecrypt repository for convenience. You better grab the SILK SDK
+from https://github.com/gaozehua/SILKCodec and compile the decoder tool yourself.)
+
+Codecs other than G.711, G.722 and SILK/8000 or SILK/16000 are not supported.
+
+
+
+
+
+
+To detect RTP streams in a .pcap file run
+
+srtpdecrypt analyze <input_file>
+
+Example:
+srtpdecrypt analyze input.pcap
