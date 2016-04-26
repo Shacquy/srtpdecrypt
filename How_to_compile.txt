@@ -16,6 +16,7 @@ For Linux:
 
 -----------------------------------
 Download and install the libpcap-dev (for example 'sudo apt-get install libpcap0.8-dev')
-Copy all .h and .c files to a folder
+Copy all .h and .c files from the srtpdecrypt repository to a folder
 gcc aes.c analyze.c base64.c decrypt.c extract.c file.c hex.c srtpdecrypt.c usage-and-help.c -o srtpdecrypt -lpcap
 -----------------------------------
+
